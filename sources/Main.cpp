@@ -70,12 +70,12 @@ Shader shader;
 }*/
 
 void init();
-bool SetOpenGLAttributes();
-void PrintSDL_GL_Attributes();
-void CheckSDLError(int line);
+bool setOpenGLAttributes();
+void printSDL_GL_Attributes();
+void checkSDLError(int line);
 
 
-bool SetOpenGlAttributes() {
+bool setOpenGlAttributes() {
 	// SDL_GL_SetAttribute(SDL_GL_ACCELERATED_VISUAL, 1);
 	SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE);
 	SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 4);
@@ -95,7 +95,7 @@ void init() {
 	// Creating window
 	window = SDL_CreateWindow("4D", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, SCREEN_WIDTH, SCREEN_HEIGHT, SDL_WINDOW_OPENGL | SDL_WINDOW_FULLSCREEN);
 
-	SetOpenGlAttributes();
+	setOpenGlAttributes();
 
 	// Setting GL context
 	context = SDL_GL_CreateContext(window);
@@ -156,8 +156,7 @@ void init() {
 	glVertexAttribPointer(colAttrib, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(GLfloat), (void*)(2 * sizeof(GLfloat)));*/
 
 
-void SetupBufferObjects()
-{
+void setupBufferObjects() {
 	// Generate and assign two Vertex Buffer Objects to our handle
 	glGenBuffers(2, vbo);
 
@@ -195,38 +194,23 @@ void SetupBufferObjects()
 
 	// Set up shader ( will be covered in the next part )
 	// ===================
-	shader.Init();
+	shader.init();
 
-	shader.BindAttributeLocation(0, "in_Position");
-	shader.BindAttributeLocation(1, "in_Colors");
-	shader.UseProgram();
+	shader.bindAttributeLocation(0, "in_Position");
+	shader.bindAttributeLocation(1, "in_Colors");
+	shader.useProgram();
 
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 }
 
-void Render()
-{
-	// First, render a square without any colors ( all vertexes will be black )
-	// ===================
-	// Make our background grey
-	/*glClearColor(0.5, 0.5, 0.5, 1.0);
-	glClear(GL_COLOR_BUFFER_BIT);
-
+void render() {
 	// Invoke glDrawArrays telling that our data is a line loop and we want to draw 2-4 vertexes
-	glDrawArrays(GL_LINE_LOOP, 0, 4);
+	// glDrawArrays(GL_LINE_LOOP, 0, 4);
 
-	// Swap our buffers to make our changes visible
-	SDL_GL_SwapWindow(window);
-
-	std::cout << "Press ENTER to render next frame\n";
-	std::cin.ignore();*/
-
-	// Second, enable the colors and draw a solid square
-	// ===================
-	// Enable our attribute within the current VAO
+	// Putting some color
 	glEnableVertexAttribArray(colorAttributeIndex);
 
-	// Make our background black*/
+	// Make our background black
 	glClearColor(0.0, 0.0, 0.0, 0.0);
 	glClear(GL_COLOR_BUFFER_BIT);
 
@@ -239,7 +223,7 @@ void Render()
 }
 
 void close() {
-	shader.CleanUp();
+	shader.cleanUp();
 	SDL_GL_DeleteContext(context);
 	SDL_DestroyWindow(window);
 
@@ -248,8 +232,8 @@ void close() {
 
 int main(int argc, char const *argv[]) {
 	// First, we initiallize our stuff.
-	 init(/*"../shaders/shader.vertex", "../shaders/shader.fragment"*/);
-	SetupBufferObjects();
+	init(/*"../shaders/shader.vertex", "../shaders/shader.fragment"*/);
+	setupBufferObjects();
 
 
 	// Creating event. It's what will hold the window.
@@ -261,16 +245,8 @@ int main(int argc, char const *argv[]) {
 			if (windowEvent.type == SDL_QUIT || (windowEvent.type == SDL_KEYUP && windowEvent.key.keysym.sym == SDLK_ESCAPE)) break;
 		}
     	// now you can make GL calls.
-    	// Display();
-    	// glUseProgram(shaderProgram);
-		Render();
 
-
-		glDrawArrays(GL_TRIANGLES, 0, 3);
-		// glDrawElements( GL_TRIANGLE_FAN, 4, GL_UNSIGNED_INT, NULL );
-		// glUseProgram(NULL);
-    	// SwapWindow will pass GL context to window.
-		SDL_GL_SwapWindow(window);
+		render();
 	}
 
 	// Break has been called, let's close everything.
@@ -278,7 +254,7 @@ int main(int argc, char const *argv[]) {
 	return 0;
 }
 
-void CheckSDLError(int line = -1)
+void checkSDLError(int line = -1)
 {
 	std::string error = SDL_GetError();
 
@@ -293,7 +269,7 @@ void CheckSDLError(int line = -1)
 	}
 }
 
-void PrintSDL_GL_Attributes()
+void printSDL_GL_Attributes()
 {
 	int value = 0;
 	SDL_GL_GetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, &value);

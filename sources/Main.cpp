@@ -8,7 +8,7 @@ SDL_Window *window;
 SDL_GLContext context;
 
 // Our object has 4 points
-const uint32_t points = 4;
+const uint32_t points = 8;
 
 // Each poin has three values ( x, y, z)
 const uint32_t floatsPerPoint = 3;
@@ -18,18 +18,27 @@ const uint32_t floatsPerColor = 4;
 
 // This is the object we'll draw ( a simple square
 const GLfloat diamond[points][floatsPerPoint] = {
-	{ -0.5,  0.5,  0.5 }, // Top left
-	{  0.5,  0.5,  0.5 }, // Top right
-	{  0.5, -0.5,  0.5 }, // Bottom right 
-	{ -0.5, -0.5,  0.5 }, // Bottom left
+	// I want a square, so I have to set the width at height/screen ratio.
+	{ -0.5*SCREEN_HEIGHT/SCREEN_WIDTH,  0.5,  0.5 }, // Top left
+	{  0.5*SCREEN_HEIGHT/SCREEN_WIDTH,  0.5,  0.5 }, // Top right
+	{  0.5*SCREEN_HEIGHT/SCREEN_WIDTH, -0.5,  0.5 }, // Bottom right 
+	{ -0.5*SCREEN_HEIGHT/SCREEN_WIDTH, -0.5,  0.5 }, // Bottom left
+	{ -0.5*SCREEN_HEIGHT/SCREEN_WIDTH,  0.5, -0.5 }, // Top left
+	{  0.5*SCREEN_HEIGHT/SCREEN_WIDTH,  0.5, -0.5 }, // Top right
+	{  0.5*SCREEN_HEIGHT/SCREEN_WIDTH, -0.5, -0.5 }, // Bottom right 
+	{ -0.5*SCREEN_HEIGHT/SCREEN_WIDTH, -0.5, -0.5 }, // Bottom left
 };
 
 // This is the object we'll draw ( a simple square
 const GLfloat colors[points][floatsPerColor] = {
 	{ 0.0, 1.0, 0.0, 1.0 }, // Top left
-	{ 1.0, 1.0, 0.0, 1.0  }, // Top right
-	{ 1.0, 0.0, 0.0, 1.0  }, // Bottom right 
-	{ 0.0, 0.0, 1.0, 1.0  }, // Bottom left
+	{ 1.0, 1.0, 0.0, 1.0 }, // Top right
+	{ 1.0, 0.0, 0.0, 1.0 }, // Bottom right 
+	{ 0.0, 0.0, 1.0, 1.0 }, // Bottom left
+	{ 0.0, 1.0, 0.0, 1.0 }, // Top left
+	{ 1.0, 1.0, 0.0, 1.0 }, // Top right
+	{ 1.0, 0.0, 0.0, 1.0 }, // Bottom right 
+	{ 0.0, 0.0, 1.0, 1.0 }, // Bottom left
 };
 
 // Create variables for storing the ID of our VAO and VBO
@@ -155,7 +164,7 @@ void setupBufferObjects() {
 	// =======================
 	glBindBuffer(GL_ARRAY_BUFFER, vbo[1]);
 
-	// Copy the vertex data from diamond to our buffer
+	// Copy the vertex data from colors to our buffer
 	glBufferData(GL_ARRAY_BUFFER, ( points * floatsPerColor) * sizeof(GLfloat), colors, GL_STATIC_DRAW);
 
 	// Specify that our coordinate data is going into attribute index 0, and contains three floats per vertex
@@ -185,7 +194,7 @@ void render() {
 	glClearColor(0.0, 0.0, 0.0, 0.0);
 	glClear(GL_COLOR_BUFFER_BIT);
 
-	// Invoke glDrawArrays telling that our data is a line loop and we want to draw 2-4 vertexes
+	// Invoke glDrawArrays telling that our data is a triangle fan and we want to draw 2-4 vertexes
 	glDrawArrays(GL_TRIANGLE_FAN, 0, 4);
 
 	// Swap our buffers to make our changes visible

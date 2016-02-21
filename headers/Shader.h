@@ -1,15 +1,27 @@
+// I've found this file on headerfile.com, adapted it to fit my coding style.
+
 #pragma once
- 
-#include <GL/glew.h>
-#include <SDL2/SDL.h>
- 
-#include <string>
-#include <sstream>
-#include <fstream>
-#include <iostream>
  
 class Shader {
 	public:
+
+	// The handle to our shader program
+	GLuint shaderprogram;
+ 
+	// The handles to the induvidual shader
+	GLuint vertexshader, fragmentShader;
+ 
+	// The source code of the shaders
+	GLchar *vertexsource, *fragmentSource;
+ 
+	int isCompiled_VS, isCompiled_FS;
+ 
+	int maxLength;
+	char *vertexInfoLog;
+	char *shaderProgramInfoLog;
+ 
+	int isLinked;
+
 	std::string readFile(const char* file) {
 		// Open file
 		std::ifstream t(file);
@@ -180,20 +192,4 @@ class Shader {
 		free(vertexsource);
 	}
  
-	// The handle to our shader program
-	GLuint shaderprogram;
- 
-	// The handles to the induvidual shader
-	GLuint vertexshader, fragmentShader;
- 
-	// The source code of the shaders
-	GLchar *vertexsource, *fragmentSource;
- 
-	int isCompiled_VS, isCompiled_FS;
- 
-	int maxLength;
-	char *vertexInfoLog;
-	char *shaderProgramInfoLog;
- 
-	int isLinked;
 };

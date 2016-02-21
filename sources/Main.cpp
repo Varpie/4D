@@ -2,11 +2,6 @@
 
 #include "../headers/Main.h"
 #include "../headers/Shader.h"
-#include <glm/glm.hpp>
-#include <glm/gtc/matrix_transform.hpp>
-#include <glm/gtc/type_ptr.hpp> 
-#include <string>
-#include <fstream>
 
 // GLuint shaderProgram;
 SDL_Window *window;
@@ -44,30 +39,6 @@ GLuint vbo[2], vao[1];
 const uint32_t positionAttributeIndex = 0, colorAttributeIndex = 1;
 
 Shader shader;
-
-/*std::string LoadShaderFile(std::string strFile) {
-	// Open the file passed in
-	std::ifstream fin(strFile.c_str());
-
-	// Make sure we opened the file correctly
-	if ( !fin ) {
-		return "";
-	}
-
-	std::string strLine = "";
-	std::string strText = "";
-
-	// Go through and store each line in the text file within a "string" object
-	while (getline(fin, strLine)) {
-		strText = strText + "\n" + strLine;
-	}
-
-	// Close our file
-	fin.close();
-
-	// Return the text file's data
-	return strText;
-}*/
 
 void init();
 bool setOpenGLAttributes();
@@ -111,6 +82,7 @@ void init() {
 		exit(1);
 	}
 }
+
 /*
 
 	glGenVertexArrays(1, &vao);
@@ -154,7 +126,6 @@ void init() {
 	GLint colAttrib = glGetAttribLocation(shaderProgram, "color");
 	glEnableVertexAttribArray(colAttrib);
 	glVertexAttribPointer(colAttrib, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(GLfloat), (void*)(2 * sizeof(GLfloat)));*/
-
 
 void setupBufferObjects() {
 	// Generate and assign two Vertex Buffer Objects to our handle
@@ -219,7 +190,6 @@ void render() {
 
 	// Swap our buffers to make our changes visible
 	SDL_GL_SwapWindow(window);
-
 }
 
 void close() {
@@ -254,8 +224,7 @@ int main(int argc, char const *argv[]) {
 	return 0;
 }
 
-void checkSDLError(int line = -1)
-{
+void checkSDLError(int line = -1) {
 	std::string error = SDL_GetError();
 
 	if (error != "")
@@ -269,8 +238,7 @@ void checkSDLError(int line = -1)
 	}
 }
 
-void printSDL_GL_Attributes()
-{
+void printSDL_GL_Attributes() {
 	int value = 0;
 	SDL_GL_GetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, &value);
 	std::cout << "SDL_GL_CONTEXT_MAJOR_VERSION : " << value << std::endl;

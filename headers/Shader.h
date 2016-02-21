@@ -8,11 +8,9 @@
 #include <fstream>
 #include <iostream>
  
-class Shader
-{
-public:
-	std::string ReadFile(const char* file)
-	{
+class Shader {
+	public:
+	std::string readFile(const char* file) {
 		// Open file
 		std::ifstream t(file);
  
@@ -27,17 +25,15 @@ public:
 		return fileContent;
 	}
  
-	void BindAttributeLocation(int index, const std::string &attribute)
-	{
+	void bindAttributeLocation(int index, const std::string &attribute) {
 		// Bind attribute index 0 (coordinates) to in_Position and attribute index 1 (color) to in_Color
 		// Attribute locations must be setup before calling glLinkProgram
 		glBindAttribLocation(shaderprogram, index, attribute.c_str());
 	}
  
-	void Init()
-	{
-		LoadVertexShader("../shaders/shader.vertex");
-		LoadFragmentShader("../shaders/shader.fragment");
+	void init() {
+		loadVertexShader("../shaders/shader.vertex");
+		loadFragmentShader("../shaders/shader.fragment");
  
 		/* If we reached this point it means the vertex and fragment shaders compiled and are syntax error free. */
 		/* We must link them together to make a GL shader program */
@@ -49,22 +45,20 @@ public:
 		glAttachShader(shaderprogram, vertexshader);
 		glAttachShader(shaderprogram, fragmentShader);
  
-		LinkShaders();
+		linkShaders();
 	}
  
-	void UseProgram()
-	{
+	void useProgram() {
 		/* Load the shader into the rendering pipeline */
 		glUseProgram(shaderprogram);
 	}
  
-	void LoadVertexShader(const std::string &filename)
-	{
+	void loadVertexShader(const std::string &filename) {
 		std::cout << "Linking vertex shader" << std::endl;
 		// Read file as 
-		std::string str = ReadFile(filename.c_str());
+		std::string str = readFile(filename.c_str());
  
-		 // c_str() gives us a const char*, but we need a non-const one
+		// c_str() gives us a const char*, but we need a non-const one
 		char* src = const_cast<char*>( str.c_str());
 		
 		/* Create an empty vertex shader handle */
@@ -78,10 +72,9 @@ public:
 		/* Compile the vertex shader */
 		glCompileShader(vertexshader);
  
-		glGetShaderiv(vertexshader, GL_COMPILE_STATUS, &IsCompiled_VS);
+		glGetShaderiv(vertexshader, GL_COMPILE_STATUS, &isCompiled_VS);
  
-		if (IsCompiled_VS == false)
-		{
+		if (isCompiled_VS == false) {
 			std::cout << "Vertex Shader compilation failed : " << vertexshader << std::endl;
  
 			glGetShaderiv(vertexshader, GL_INFO_LOG_LENGTH, &maxLength);
@@ -101,13 +94,12 @@ public:
  
 	}
 
-	void LoadFragmentShader(const std::string &filename)
-	{
+	void loadFragmentShader(const std::string &filename) {
 		std::cout << "Linking fragment shader" << std::endl;
 		// Read file as 
-		std::string str = ReadFile(filename.c_str());
+		std::string str = readFile(filename.c_str());
  
-		 // c_str() gives us a const char*, but we need a non-const one
+		// c_str() gives us a const char*, but we need a non-const one
 		char* src = const_cast<char*>( str.c_str());
 		
 		/* Create an empty vertex shader handle */
@@ -121,10 +113,9 @@ public:
 		/* Compile the vertex shader */
 		glCompileShader(fragmentShader);
  
-		glGetShaderiv(fragmentShader, GL_COMPILE_STATUS, &IsCompiled_FS);
+		glGetShaderiv(fragmentShader, GL_COMPILE_STATUS, &isCompiled_FS);
  
-		if (IsCompiled_FS == false)
-		{
+		if (isCompiled_FS == false) {
 			std::cout << "Fragment Shader compilation failed : " << fragmentShader << std::endl;
  
 			glGetShaderiv(fragmentShader, GL_INFO_LOG_LENGTH, &maxLength);
@@ -143,8 +134,7 @@ public:
 		}
  
 	}
-	void LinkShaders()
-	{
+	void linkShaders() {
 		/* Link our program */
 		/* At this stage, the vertex and fragment programs are inspected, optimized and a binary code is generated for the shader. */
 		/* The binary code is uploaded to the GPU, if there is no error. */
@@ -154,9 +144,8 @@ public:
 		/* and fragment shaders. It might be that you have surpassed your GPU's abilities. Perhaps too many ALU operations or */
 		/* too many texel fetch instructions or too many interpolators or dynamic loops. */
  
-		glGetProgramiv(shaderprogram, GL_LINK_STATUS, (int *)&IsLinked);
-		if (IsLinked == false)
-		{
+		glGetProgramiv(shaderprogram, GL_LINK_STATUS, (int *)&isLinked);
+		if (isLinked == false) {
 			std::cout << "Not linked : shaderprogram" << std::endl;
  
 			/* Noticed that glGetProgramiv is used to get the length for a shader program, not glGetShaderiv. */
@@ -177,8 +166,7 @@ public:
 		}
 	}
  
-	void CleanUp()
-	{
+	void cleanUp() {
 		/* Cleanup all the things we bound and allocated */
 		glUseProgram(0);
 		glDetachShader(shaderprogram, vertexshader);
@@ -201,11 +189,11 @@ public:
 	// The source code of the shaders
 	GLchar *vertexsource, *fragmentSource;
  
-	int IsCompiled_VS, IsCompiled_FS;
+	int isCompiled_VS, isCompiled_FS;
  
 	int maxLength;
 	char *vertexInfoLog;
 	char *shaderProgramInfoLog;
  
-	int IsLinked;
+	int isLinked;
 };

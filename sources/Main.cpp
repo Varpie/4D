@@ -1,96 +1,13 @@
 // No copyrights, it's free.
 
 #include "../headers/Main.h"
-#include "../headers/Shader.h"
 
-// GLuint shaderProgram;
-SDL_Window *window;
-SDL_GLContext context;
+Model model;
+Renderer renderer;
 
-// Our object has 4 points
-const uint32_t points = 8;
-
-// Each poin has three values ( x, y, z)
-const uint32_t floatsPerPoint = 3;
-
-// Each color has 4 values ( red, green, blue, alpha )
-const uint32_t floatsPerColor = 4;
-
-// This is the object we'll draw ( a simple square
-const GLfloat diamond[points][floatsPerPoint] = {
-	// I want a square, so I have to set the width at height/screen ratio.
-	{ -0.5*SCREEN_HEIGHT/SCREEN_WIDTH,  0.5,  0.5 }, // Top left
-	{  0.5*SCREEN_HEIGHT/SCREEN_WIDTH,  0.5,  0.5 }, // Top right
-	{  0.5*SCREEN_HEIGHT/SCREEN_WIDTH, -0.5,  0.5 }, // Bottom right 
-	{ -0.5*SCREEN_HEIGHT/SCREEN_WIDTH, -0.5,  0.5 }, // Bottom left
-	{ -0.5*SCREEN_HEIGHT/SCREEN_WIDTH,  0.5, -0.5 }, // Top left
-	{  0.5*SCREEN_HEIGHT/SCREEN_WIDTH,  0.5, -0.5 }, // Top right
-	{  0.5*SCREEN_HEIGHT/SCREEN_WIDTH, -0.5, -0.5 }, // Bottom right 
-	{ -0.5*SCREEN_HEIGHT/SCREEN_WIDTH, -0.5, -0.5 }, // Bottom left
-};
-
-// This is the object we'll draw ( a simple square
-const GLfloat colors[points][floatsPerColor] = {
-	{ 0.0, 1.0, 0.0, 1.0 }, // Top left
-	{ 1.0, 1.0, 0.0, 1.0 }, // Top right
-	{ 1.0, 0.0, 0.0, 1.0 }, // Bottom right 
-	{ 0.0, 0.0, 1.0, 1.0 }, // Bottom left
-	{ 0.0, 1.0, 0.0, 1.0 }, // Top left
-	{ 1.0, 1.0, 0.0, 1.0 }, // Top right
-	{ 1.0, 0.0, 0.0, 1.0 }, // Bottom right 
-	{ 0.0, 0.0, 1.0, 1.0 }, // Bottom left
-};
-
-// Create variables for storing the ID of our VAO and VBO
-GLuint vbo[2], vao[1]; 
-
-// The positons of the position and color data within the VAO
-const uint32_t positionAttributeIndex = 0, colorAttributeIndex = 1;
-
-Shader shader;
-
-void init();
-bool setOpenGLAttributes();
 void printSDL_GL_Attributes();
 void checkSDLError(int line);
 
-
-bool setOpenGlAttributes() {
-	// SDL_GL_SetAttribute(SDL_GL_ACCELERATED_VISUAL, 1);
-	SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE);
-	SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 4);
-	SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 4);
-	/* Turn on double buffering with a 24bit Z buffer.
-	 * You may need to change this to 16 or 32 for your system */
-	SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
-	SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, 24);
-	return true;
-}
-
-void init() {
-	SDL_Init(SDL_INIT_VIDEO);
-
-	// Will use OpenGL 4.4
-
-	// Creating window
-	window = SDL_CreateWindow("4D", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, SCREEN_WIDTH, SCREEN_HEIGHT, SDL_WINDOW_OPENGL | SDL_WINDOW_FULLSCREEN_DESKTOP);
-
-	setOpenGlAttributes();
-
-	// Setting GL context
-	context = SDL_GL_CreateContext(window);
-	SDL_GL_SetSwapInterval(1); 
-	
-	// Initializing GLEW.
-	glewExperimental = GL_TRUE;
-	GLenum rev;
-	rev = glewInit();
-
-	if (GLEW_OK != rev){
-		std::cout << "Error: " << glewGetErrorString(rev) << std::endl;
-		exit(1);
-	}
-}
 
 /*
 
@@ -136,83 +53,11 @@ void init() {
 	glEnableVertexAttribArray(colAttrib);
 	glVertexAttribPointer(colAttrib, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(GLfloat), (void*)(2 * sizeof(GLfloat)));*/
 
-void setupBufferObjects() {
-	// Generate and assign two Vertex Buffer Objects to our handle
-	glGenBuffers(2, vbo);
-
-	// Generate and assign a Vertex Array Object to our handle
-	glGenVertexArrays(1, vao);
-
-	// Bind our Vertex Array Object as the current used object
-	glBindVertexArray(vao[0]);
-
-	// Positions
-	// ===================
-	// Bind our first VBO as being the active buffer and storing vertex attributes (coordinates)
-	glBindBuffer(GL_ARRAY_BUFFER, vbo[0]);
-
-	// Copy the vertex data from diamond to our buffer
-	glBufferData(GL_ARRAY_BUFFER, ( points * floatsPerPoint) * sizeof(GLfloat), diamond, GL_STATIC_DRAW);
-
-	// Specify that our coordinate data is going into attribute index 0, and contains three floats per vertex
-	glVertexAttribPointer(positionAttributeIndex, 3, GL_FLOAT, GL_FALSE, 0, 0);
-
-	// Enable our attribute within the current VAO
-	glEnableVertexAttribArray(positionAttributeIndex);
-
-	// Colors
-	// =======================
-	glBindBuffer(GL_ARRAY_BUFFER, vbo[1]);
-
-	// Copy the vertex data from colors to our buffer
-	glBufferData(GL_ARRAY_BUFFER, ( points * floatsPerColor) * sizeof(GLfloat), colors, GL_STATIC_DRAW);
-
-	// Specify that our coordinate data is going into attribute index 0, and contains three floats per vertex
-	glVertexAttribPointer(colorAttributeIndex, 4, GL_FLOAT, GL_FALSE, 0, 0);
-
-	// Note : We didn't enable the colors here!
-
-	// Set up shader ( will be covered in the next part )
-	// ===================
-	shader.init();
-
-	shader.bindAttributeLocation(0, "in_Position");
-	shader.bindAttributeLocation(1, "in_Colors");
-	shader.useProgram();
-
-	glBindBuffer(GL_ARRAY_BUFFER, 0);
-}
-
-void render() {
-	// Invoke glDrawArrays telling that our data is a line loop and we want to draw 2-4 vertexes
-	// glDrawArrays(GL_LINE_LOOP, 0, 4);
-
-	// Putting some color
-	glEnableVertexAttribArray(colorAttributeIndex);
-
-	// Make our background black
-	glClearColor(0.0, 0.0, 0.0, 0.0);
-	glClear(GL_COLOR_BUFFER_BIT);
-
-	// Invoke glDrawArrays telling that our data is a triangle fan and we want to draw 2-4 vertexes
-	glDrawArrays(GL_TRIANGLE_FAN, 0, 4);
-
-	// Swap our buffers to make our changes visible
-	SDL_GL_SwapWindow(window);
-}
-
-void close() {
-	shader.cleanUp();
-	SDL_GL_DeleteContext(context);
-	SDL_DestroyWindow(window);
-
-	SDL_Quit();
-}
 
 int main(int argc, char const *argv[]) {
 	// First, we initiallize our stuff.
-	init(/*"../shaders/shader.vertex", "../shaders/shader.fragment"*/);
-	setupBufferObjects();
+	renderer.init(/*"../shaders/shader.vertex", "../shaders/shader.fragment"*/);
+	model.setupBufferObjects();
 
 
 	// Creating event. It's what will hold the window.
@@ -225,11 +70,11 @@ int main(int argc, char const *argv[]) {
 		}
     	// now you can make GL calls.
 
-		render();
+		renderer.render();
 	}
 
 	// Break has been called, let's close everything.
-	close();
+	renderer.close();
 	return 0;
 }
 

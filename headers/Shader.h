@@ -22,6 +22,10 @@ class Shader {
  
 	int isLinked;
 
+	// Shader() {
+		
+	// }
+
 	std::string readFile(const char* file) {
 		// Open file
 		std::ifstream t(file);

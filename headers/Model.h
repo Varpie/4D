@@ -7,6 +7,8 @@ class Model {
 
 	Shader shader;
 
+	glm::mat4 model;
+
 	std::vector<GLfloat> positions;
 	// std::vector<GLfloat> colors;
 
@@ -50,6 +52,10 @@ class Model {
 	Model()
 		:	positionAttributeIndex(0)
 		,	colorAttributeIndex(1) {
+	}
+
+	glm::mat4 getModel() {
+		return model;
 	}
 
 	bool setupBufferObjects() {

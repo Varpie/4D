@@ -60,6 +60,7 @@ class Shader {
 		/* Attach our shaders to our program */
 		glAttachShader(shaderProgram, vertexshader);
 		glAttachShader(shaderProgram, fragmentShader);
+		// glUniformMatrix4fv(2, 1, GL_FALSE, &glm::mat4()[0][0]);
  
 		linkShaders();
 	}
@@ -75,7 +76,7 @@ class Shader {
 		std::string str = readFile(filename.c_str());
  
 		// c_str() gives us a const char*, but we need a non-const one
-		char* src = const_cast<char*>( str.c_str());
+		char* src = const_cast<char*>(str.c_str());
 		
 		/* Create an empty vertex shader handle */
 		GLuint shader = glCreateShader(shaderType);
@@ -142,6 +143,10 @@ class Shader {
 			free(shaderProgramInfoLog);
 			return;
 		}
+	}
+
+	void setMVP(const glm::mat4 mvp) {
+		glUniformMatrix4fv(2, 1, GL_FALSE, &mvp[0][0]);
 	}
  
 	void cleanUp() {

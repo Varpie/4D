@@ -25,7 +25,7 @@ int main(int argc, char const *argv[]) {
 		}
     	// now you can make GL calls.
 
-		renderer.render();
+		renderer.render(model.getModel());
 	}
 
 	// Break has been called, let's close everything.

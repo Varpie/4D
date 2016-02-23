@@ -48,8 +48,8 @@ class Shader {
 	}
  
 	void init() {
-		loadVertexShader("../shaders/shader.vertex");
-		loadFragmentShader("../shaders/shader.fragment");
+		loadVertexShader("../shaders/vertex.glsl");
+		loadFragmentShader("../shaders/fragment.glsl");
  
 		/* If we reached this point it means the vertex and fragment shaders compiled and are syntax error free. */
 		/* We must link them together to make a GL shader program */

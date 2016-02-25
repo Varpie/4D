@@ -18,6 +18,12 @@ class Renderer {
 			0.1f,
 			100.0f
 		);
+		
+		view = glm::lookAt(
+			glm::vec3(0,0,-4),
+			glm::vec3(0,0,0),
+			glm::vec3(0,1,0)
+		);
 	}
 	
 
@@ -74,7 +80,7 @@ class Renderer {
 	
 		// Invoke glDrawArrays telling that our data is a triangle fan and we want to draw 2-4 vertexes
 		glDrawArrays(GL_TRIANGLE_FAN, 0, 4);
-	
+		glm::mat4 mvp = projection * view * model;
 		// Swap our buffers to make our changes visible
 		SDL_GL_SwapWindow(window);
 	}

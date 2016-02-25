@@ -61,7 +61,7 @@ class Renderer {
 		return true;
 	}
 
-	void render() {
+	void render(glm::mat4 model) {
 		// Invoke glDrawArrays telling that our data is a line loop and we want to draw 2-4 vertexes
 		// glDrawArrays(GL_LINE_LOOP, 0, 4);
 	
